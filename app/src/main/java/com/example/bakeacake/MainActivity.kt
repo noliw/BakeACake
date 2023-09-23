@@ -3,6 +3,7 @@ package com.example.bakeacake
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.DialogInterface
+import android.media.MediaPlayer
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.inputmethod.InputMethodManager
@@ -31,6 +32,9 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        var success : MediaPlayer = MediaPlayer.create(this, R.raw.sucess)
+        var fail : MediaPlayer = MediaPlayer.create(this, R.raw.fail_sound)
 
         wetBtn = findViewById(R.id.wet_ingredients_btn)
         dryBtn = findViewById(R.id.dry_ingredients_btn)
@@ -81,6 +85,7 @@ class MainActivity : AppCompatActivity() {
                 val dialogBuilder = AlertDialog.Builder(this)
 
                 if (wetList.count() == 3 && dryList.count() == 3) {
+                    success.start()
                     dialogBuilder.setMessage("You have baked a delicious cake")
                         .setTitle("CONGRATULATIONS")
                         .setCancelable(true)
@@ -91,6 +96,7 @@ class MainActivity : AppCompatActivity() {
                             reset()
                         }
                 } else {
+                    fail.start()
                     dialogBuilder.setMessage("To bake a cake, You need at least \n3 wet ingredients and 3 dry ingredients\nGo back and add more ingredients")
                         .setTitle("Bad Job!")
                         .setCancelable(false)
