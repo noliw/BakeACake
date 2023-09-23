@@ -48,6 +48,7 @@ class MainActivity : AppCompatActivity() {
                 dryNum.text = "You have ${dryList.count()} dry ingredients."
                 dryInput.text.clear() // clear the EditText content after adding the ingredient
             } else {
+                hideKeyboard(this)
                 Toast.makeText(this, "Please enter a valid ingredient.", Toast.LENGTH_SHORT).show()
             }
         }
@@ -59,6 +60,7 @@ class MainActivity : AppCompatActivity() {
                 wetNum.text = "You have ${wetList.count()} wet ingredients."
                 wetInput.text.clear() // clear the EditText content after adding the ingredient
             } else {
+                hideKeyboard(this)
                 Toast.makeText(this, "Please enter a valid ingredient.", Toast.LENGTH_SHORT).show()
             }
         }
@@ -68,38 +70,42 @@ class MainActivity : AppCompatActivity() {
             hideKeyboard(this)
             wetNum.text = ""
             dryNum.text = ""
-            ingredientList.text = """Your wet ingredients are:
+            if (wetList.isNotEmpty() || dryList.isNotEmpty()) {
+                ingredientList.text = """Your wet ingredients are:
            |-> ${wetList.joinToString("\n -> ")}
            |
            |Your dry ingredients are:
            |-> ${dryList.joinToString("\n -> ")}
        """.trimMargin()
 
-            val dialogBuilder = AlertDialog.Builder(this)
+                val dialogBuilder = AlertDialog.Builder(this)
 
-            if (wetList.count() == 3 && dryList.count() == 3) {
-                dialogBuilder.setMessage("You have baked a delicious cake")
-                    .setTitle("CONGRATULATIONS")
-                    .setCancelable(true)
-                    .setPositiveButton("Go back") { dialog, _ ->
-                        dialog.cancel()
-                    }
-                    .setNegativeButton("Reset") { _, _ ->
-                        reset()
-                    }
+                if (wetList.count() == 3 && dryList.count() == 3) {
+                    dialogBuilder.setMessage("You have baked a delicious cake")
+                        .setTitle("CONGRATULATIONS")
+                        .setCancelable(true)
+                        .setPositiveButton("Go back") { dialog, _ ->
+                            dialog.cancel()
+                        }
+                        .setNegativeButton("Reset") { _, _ ->
+                            reset()
+                        }
+                } else {
+                    dialogBuilder.setMessage("To bake a cake, You need at least \n3 wet ingredients and 3 dry ingredients\nGo back and add more ingredients")
+                        .setTitle("Bad Job!")
+                        .setCancelable(false)
+                        .setPositiveButton("Go Back!") { dialog, _ ->
+                            dialog.cancel()
+                        }
+                        .setNegativeButton("Reset") { _, _ ->
+                            reset()
+                        }
+                }
+
+                dialogBuilder.show()
             } else {
-                dialogBuilder.setMessage("To bake a cake, You need at least \n3 wet ingredients and 3 dry ingredients\nGo back and add more ingredients")
-                    .setTitle("Bad Job!")
-                    .setCancelable(false)
-                    .setPositiveButton("Go Back!") { dialog, _ ->
-                        dialog.cancel()
-                    }
-                    .setNegativeButton("Reset") { _, _ ->
-                        reset()
-                    }
+                Toast.makeText(this, "You have no ingredients. \nPlease enter ingredients to continue", Toast.LENGTH_SHORT).show()
             }
-
-            dialogBuilder.show()
         }
     }
 
