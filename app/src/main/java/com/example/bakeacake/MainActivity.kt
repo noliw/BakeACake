@@ -12,6 +12,11 @@ import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
+import nl.dionsegijn.konfetti.core.Party
+import nl.dionsegijn.konfetti.core.Position
+import nl.dionsegijn.konfetti.core.emitter.Emitter
+import nl.dionsegijn.konfetti.xml.KonfettiView
+import java.util.concurrent.TimeUnit
 
 
 val wetList = mutableListOf<String>()
@@ -27,14 +32,15 @@ class MainActivity : AppCompatActivity() {
     lateinit var dryNum: TextView
     lateinit var wetNum: TextView
     lateinit var ingredientList: TextView
+    lateinit var confetti: KonfettiView
 
     @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        var success : MediaPlayer = MediaPlayer.create(this, R.raw.sucess)
-        var fail : MediaPlayer = MediaPlayer.create(this, R.raw.fail_sound)
+        var success: MediaPlayer = MediaPlayer.create(this, R.raw.sucess)
+        var fail: MediaPlayer = MediaPlayer.create(this, R.raw.fail_sound)
 
         wetBtn = findViewById(R.id.wet_ingredients_btn)
         dryBtn = findViewById(R.id.dry_ingredients_btn)
@@ -44,6 +50,7 @@ class MainActivity : AppCompatActivity() {
         dryNum = findViewById(R.id.dry_num_tv)
         wetNum = findViewById(R.id.wet_num_tv)
         ingredientList = findViewById(R.id.ingredient_list_tv)
+        confetti = findViewById(R.id.konfettiView)
 
         dryBtn.setOnClickListener {
             val ingredient = dryInput.text.toString().trim()
@@ -86,6 +93,7 @@ class MainActivity : AppCompatActivity() {
 
                 if (wetList.count() == 3 && dryList.count() == 3) {
                     success.start()
+                    confetti()
                     dialogBuilder.setMessage("You have baked a delicious cake")
                         .setTitle("CONGRATULATIONS")
                         .setCancelable(true)
@@ -110,7 +118,11 @@ class MainActivity : AppCompatActivity() {
 
                 dialogBuilder.show()
             } else {
-                Toast.makeText(this, "You have no ingredients. \nPlease enter ingredients to continue", Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    this,
+                    "You have no ingredients. \nPlease enter ingredients to continue",
+                    Toast.LENGTH_SHORT
+                ).show()
             }
         }
     }
@@ -122,8 +134,10 @@ class MainActivity : AppCompatActivity() {
         dryNum.text = ""
         ingredientList.text = ""
     }
+
     fun hideKeyboard(activity: Activity) {
-        val inputMethodManager = activity.getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
+        val inputMethodManager =
+            activity.getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
         // Check if no view has focus:
         val currentFocusedView = activity.currentFocus
         if (currentFocusedView != null) {
@@ -131,4 +145,16 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    fun confetti() {
+        var party = Party(
+            speed = 0f,
+            maxSpeed = 30f,
+            damping = 0.9f,
+            spread = 360,
+            colors = listOf(0xfce18a, 0xff726d, 0xf4306d, 0xb48def),
+            emitter = Emitter(duration = 100, TimeUnit.MILLISECONDS).max(100),
+            position = Position.Relative(0.5, 0.3)
+        )
+        confetti.start(party)
+    }
 }
