@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">Bake a cake</string>
+    <string name="mix_it">MIX IT</string>
+    <string name="add">ADD</string>
+    <string name="dry_ingredients">Dry Ingredients</string>
+    <string name="add2">ADD</string>
+    <string name="wet_ingredients">Wet Ingredients</string>
+</resources>
